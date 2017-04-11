@@ -1,0 +1,24 @@
+public function sendFcmNotification($DeviceToken,$msg){
+$this->checkApiCall(); 		
+$res=array();	
+$header=array('Content-Type: application/json',
+"Authorization: key=AIzaSyAFT4FXcNYtZlkzDpvc6NxSk3EGqP63EB4");
+$ch = curl_init("https://fcm.googleapis.com/fcm/send");
+curl_setopt( $ch,CURLOPT_POST, true );
+curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false );
+curl_setopt($ch,CURLOPT_RETURNTRANSFER, true );
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"notification\": {\"title\": \"Requestline Notification.\",\"body\": \"".$msg."\"},\"to\" : \"".$DeviceToken."\"}");
+$result=curl_exec($ch);
+curl_close($ch);
+$data=json_decode($result);
+if($data->success>0){
+$res['msg']="Message has been send.";
+$res['status']=TRUE;
+}else{
+$res['msg']="Error:Message has not been send.";
+$res['status']=FALSE;
+}
+$this->response_api($res);
+}
